@@ -188,6 +188,41 @@ a:hover {
   color: var(--text);
 }
 
+.icon-btn {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.icon-btn:hover {
+  border-color: var(--muted);
+  color: var(--text);
+}
+
+.icon-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.icon-btn .icon-moon {
+  display: none;
+}
+
+[data-theme="light"] .icon-btn .icon-sun {
+  display: none;
+}
+
+[data-theme="light"] .icon-btn .icon-moon {
+  display: block;
+}
+
 /* hero + search */
 
 .hero {

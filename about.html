@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About — CmdBook</title>
-<meta name="description" content="How CmdBook is structured, how entries are written, and how to contribute a command.">
+<meta name="description" content="The purpose of CmdBook and the person who builds it.">
 <meta name="theme-color" content="#0d1117">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="manifest" href="manifest.webmanifest">
@@ -29,7 +29,10 @@
     </nav>
     <div class="header-actions">
       <button id="mode-toggle" class="text-btn" type="button" aria-pressed="false">Detailed</button>
-      <button id="theme-toggle" class="text-btn" type="button">Light</button>
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch to light theme" title="Switch to light theme">
+        <svg class="icon-sun" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="3.2" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v1.8M8 12.7v1.8M1.5 8h1.8M12.7 8h1.8M3.4 3.4l1.3 1.3M11.3 11.3l1.3 1.3M12.6 3.4l-1.3 1.3M4.7 11.3l-1.3 1.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg class="icon-moon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13.2 9.7A5.6 5.6 0 0 1 6.3 2.8 5.7 5.7 0 1 0 13.2 9.7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </button>
     </div>
   </div>
 </header>
@@ -37,55 +40,20 @@
 <main class="wrap wrap-narrow">
   <header class="page-head">
     <h1>About CmdBook</h1>
-    <p>A command reference that explains the parts people usually have to look up twice.</p>
+    <p>A reference for commands and flags, written for people who are still learning them.</p>
   </header>
 
   <section class="prose">
-    <h2>What this is</h2>
-    <p>CmdBook is a static reference for commands used in day-to-day development and security work. Each entry has four parts: the command, a plain-English description, a note on when to use it, and a breakdown of its flags. Entries are grouped by topic and can be searched from any page.</p>
-    <p>The explainer on the <a href="explain.html">Explain</a> page uses the same data. It splits a command into tokens, identifies the program, and resolves flags from the dictionary in <code>data/commands.json</code>. Unknown programs and flags are labelled as unknown instead of being guessed.</p>
+    <h2>Purpose</h2>
+    <p>CmdBook is a command reference for beginners. Most cheat sheets list commands and assume the flags already make sense. Each entry here explains what the command does, when you would use it, and what every flag changes. Commands that can delete data or expose a system are marked before you copy them.</p>
+    <p>The reference covers Linux, Git, Python, security, and web commands. The <a href="explain.html">explainer</a> uses the same dictionary to break down a command you paste, token by token, and it says when it does not recognise a program or flag instead of guessing.</p>
 
-    <h2>Entry format</h2>
-    <p>Entries live in <code>data/&lt;topic&gt;.json</code> as arrays. A minimal entry looks like this:</p>
-    <pre><code>{
-  "id": "tar-extract",
-  "command": "tar -xzvf backup.tar.gz",
-  "plain": "Extract a .tar.gz archive into the current folder.",
-  "when": "You downloaded a .tar.gz and need the files inside.",
-  "safety": "safe",
-  "tags": ["files", "archives"],
-  "flags": [
-    { "flag": "-x", "meaning": "extract" },
-    { "flag": "-z", "meaning": "decompress gzip" }
-  ],
-  "related": ["find-name"]
-}</code></pre>
-    <p>Required fields are <code>id</code>, <code>command</code>, <code>plain</code>, <code>when</code>, <code>safety</code>, and <code>tags</code>. <code>safety</code> is one of <code>safe</code>, <code>caution</code>, or <code>danger</code>. <code>related</code> must reference IDs that exist.</p>
+    <h2>Creator</h2>
+    <p>CmdBook is built and maintained by <a href="https://github.com/arovex" rel="noopener">@arovex</a>.</p>
 
     <h2 id="contributing">Contributing</h2>
-    <p>To add a command:</p>
-    <ul>
-      <li>Add the entry to the matching topic file in <code>data/</code>.</li>
-      <li>If the explainer should understand the program, add it to <code>data/commands.json</code>.</li>
-      <li>Run <code>python scripts/build_bundle.py</code> to validate the data and regenerate <code>data/bundle.js</code>.</li>
-      <li>Run <code>python scripts/build_bundle.py --check</code> before committing. CI runs the same check.</li>
-    </ul>
-    <p>Keep <code>plain</code> focused on what the command does, and use <code>when</code> for the situation that makes you reach for it. Mark destructive commands as <code>danger</code>.</p>
-
-    <h2>Project layout</h2>
-    <pre><code>index.html            home page and search
-linux.html            topic pages
-git.html
-python.html
-security.html
-web.html
-explain.html          full command explainer
-about.html
-styles.css
-app.js                search, cards, explainer
-sw.js                 service worker cache
-data/                 entries and the program dictionary
-scripts/              data validation and bundle build</code></pre>
+    <p>Entries live in <code>data/&lt;topic&gt;.json</code>. To add or correct a command, edit the matching topic file, add any new program or flag to <code>data/commands.json</code>, then run <code>python scripts/build_bundle.py</code> and <code>python scripts/build_bundle.py --check</code>.</p>
+    <p>Keep <code>plain</code> focused on what the command does, use <code>when</code> for the situation that makes you reach for it, and mark destructive commands as <code>danger</code>.</p>
 
     <h2>License</h2>
     <p>MIT. See <a href="LICENSE">LICENSE</a>.</p>

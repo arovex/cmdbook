@@ -179,8 +179,9 @@
   function applyTheme() {
     document.documentElement.dataset.theme = state.theme;
     if (!els.themeToggle) return;
-    els.themeToggle.textContent = state.theme === 'dark' ? 'Light' : 'Dark';
-    els.themeToggle.title = state.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+    var nextTheme = state.theme === 'dark' ? 'light' : 'dark';
+    els.themeToggle.setAttribute('aria-label', 'Switch to ' + nextTheme + ' theme');
+    els.themeToggle.title = 'Switch to ' + nextTheme + ' theme';
   }
 
   function copyText(text, button) {

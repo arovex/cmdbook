@@ -15,7 +15,7 @@ A command reference for Linux, Git, Python, security, and web. Every entry expla
 | `security.html` | Keys, hashes, TLS, DNS, and checks to run before publishing |
 | `web.html` | Local servers, HTTP requests, and JSON APIs |
 | `explain.html` | Full-page command explainer |
-| `about.html` | Entry format and contributing instructions |
+| `about.html` | Purpose, creator, and contributing instructions |
 
 ## Run locally
 
