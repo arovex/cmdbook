@@ -2,6 +2,8 @@
 
 A command reference for Linux, Git, Python, security, and web. Every entry explains what the command does, when to use it, and what each flag means. A built-in explainer breaks down any command you paste.
 
+[![Open the live site](https://img.shields.io/badge/Open_live_site-0969da?style=flat-square)](https://arovex.github.io/cmdbook/)
+
 ![CmdBook home page](docs/preview.png)
 
 ## Pages
@@ -17,15 +19,15 @@ A command reference for Linux, Git, Python, security, and web. Every entry expla
 | `explain.html` | Full-page command explainer |
 | `about.html` | Purpose, creator, and contributing instructions |
 
-## Run locally
-
-Open `index.html` directly, or serve the folder:
+## Clone and run locally
 
 ```bash
+git clone https://github.com/arovex/cmdbook.git
+cd cmdbook
 python -m http.server 8000
 ```
 
-Then open `http://localhost:8000`. The data is bundled into `data/bundle.js` as a plain script, so there is no build step and no runtime dependency.
+Then open `http://localhost:8000`. You can also open `index.html` directly. The data is bundled into `data/bundle.js` as a plain script, so there is no build step and no runtime dependency.
 
 ## How the explainer works
 
@@ -101,16 +103,6 @@ cmdbook/
 └── .github/workflows/
     └── validate.yml
 ```
-
-## Deployment
-
-The site is static and has no build step. On GitHub:
-
-1. Open **Settings → Pages**.
-2. Set **Source** to **Deploy from a branch**.
-3. Choose `main` and `/ (root)`.
-
-Commit the regenerated `data/bundle.js` whenever the data changes.
 
 ## License
 
