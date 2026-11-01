@@ -1,0 +1,174 @@
+[
+  {
+    "id": "ls-all",
+    "command": "ls -la",
+    "plain": "List every file in this folder — including hidden dotfiles — with permissions, owner, size, and date.",
+    "when": "You're in a folder and something seems missing. Plain ls hides dotfiles like .env and .git.",
+    "safety": "safe",
+    "tags": ["files", "beginner", "permissions"],
+    "flags": [
+      { "flag": "-l", "meaning": "long format: permissions, owner, size, date" },
+      { "flag": "-a", "meaning": "include hidden files (dotfiles)" }
+    ],
+    "related": ["find-name", "chmod-exec"]
+  },
+  {
+    "id": "cd-home",
+    "command": "cd ~",
+    "plain": "Jump back to your home directory from anywhere.",
+    "when": "You're deep in a folder tree and want to get back to your starting point.",
+    "safety": "safe",
+    "tags": ["navigation", "beginner"],
+    "flags": [],
+    "related": ["pwd"]
+  },
+  {
+    "id": "pwd",
+    "command": "pwd",
+    "plain": "Print the full path of the folder you're currently in.",
+    "when": "You opened a terminal and aren't sure where you are, or a script needs an absolute path.",
+    "safety": "safe",
+    "tags": ["navigation", "beginner"],
+    "flags": [],
+    "related": ["cd-home", "ls-all"]
+  },
+  {
+    "id": "grep-search",
+    "command": "grep -rin \"error\" .",
+    "plain": "Search every file under the current folder for the word error, ignoring case, and show line numbers.",
+    "when": "A log or codebase is too big to read, and you need to find where something is mentioned.",
+    "safety": "safe",
+    "tags": ["search", "logs", "beginner"],
+    "flags": [
+      { "flag": "-r", "meaning": "recurse through folders" },
+      { "flag": "-i", "meaning": "ignore case" },
+      { "flag": "-n", "meaning": "show line numbers" }
+    ],
+    "related": ["find-name", "grep-secrets"]
+  },
+  {
+    "id": "find-name",
+    "command": "find . -name \"*.log\"",
+    "plain": "Find files by name under the current folder — here, every .log file.",
+    "when": "You know part of a filename but not where it lives.",
+    "safety": "safe",
+    "tags": ["files", "search"],
+    "flags": [
+      { "flag": "-name", "meaning": "match the filename against a pattern" }
+    ],
+    "related": ["grep-search", "ls-all"]
+  },
+  {
+    "id": "chmod-exec",
+    "command": "chmod +x deploy.sh",
+    "plain": "Make a script executable so you can run it with ./deploy.sh.",
+    "when": "You get 'Permission denied' when trying to run a script you just wrote or downloaded.",
+    "safety": "safe",
+    "tags": ["permissions", "beginner"],
+    "flags": [
+      { "flag": "+x", "meaning": "add the execute bit" }
+    ],
+    "related": ["chmod-600", "ls-all"]
+  },
+  {
+    "id": "chmod-600",
+    "command": "chmod 600 ~/.ssh/id_ed25519",
+    "plain": "Make a private key readable and writable only by you.",
+    "when": "SSH refuses your key because it's 'too open' — this locks it down.",
+    "safety": "safe",
+    "tags": ["permissions", "ssh", "security"],
+    "flags": [
+      { "flag": "600", "meaning": "owner read+write; group and others get nothing" }
+    ],
+    "related": ["chmod-exec", "ssh-keygen"]
+  },
+  {
+    "id": "rm-rf",
+    "command": "rm -rf build/",
+    "plain": "Delete a folder and everything inside it, with no confirmation and no trash bin.",
+    "when": "You want to wipe a generated folder (build/, dist/, node_modules/) and rebuild it.",
+    "safety": "danger",
+    "tags": ["files", "danger"],
+    "flags": [
+      { "flag": "-r", "meaning": "recurse into folders" },
+      { "flag": "-f", "meaning": "force: never ask for confirmation" }
+    ],
+    "related": ["mkdir-p"]
+  },
+  {
+    "id": "mkdir-p",
+    "command": "mkdir -p src/components/ui",
+    "plain": "Create nested folders in one command, and don't complain if they already exist.",
+    "when": "You're setting up a project structure and don't want to cd into each level.",
+    "safety": "safe",
+    "tags": ["files", "beginner"],
+    "flags": [
+      { "flag": "-p", "meaning": "create parent folders and ignore existing ones" }
+    ],
+    "related": ["rm-rf"]
+  },
+  {
+    "id": "ps-aux",
+    "command": "ps aux",
+    "plain": "List every running process on the machine with its user, CPU, memory, and command.",
+    "when": "Something is eating CPU, or you need the PID of a process to kill it.",
+    "safety": "safe",
+    "tags": ["processes", "monitoring"],
+    "flags": [
+      { "flag": "a", "meaning": "show processes from all users" },
+      { "flag": "u", "meaning": "user-oriented format with CPU and memory" },
+      { "flag": "x", "meaning": "include processes without a terminal" }
+    ],
+    "related": ["kill-process"]
+  },
+  {
+    "id": "kill-process",
+    "command": "kill -9 1234",
+    "plain": "Force-stop a process by its PID. -9 means 'don't ask, just die.'",
+    "when": "A process is frozen or ignoring a normal kill. Get the PID from ps aux first.",
+    "safety": "caution",
+    "tags": ["processes"],
+    "flags": [
+      { "flag": "-9", "meaning": "send SIGKILL: stop immediately, no cleanup" }
+    ],
+    "related": ["ps-aux"]
+  },
+  {
+    "id": "tar-extract",
+    "command": "tar -xzvf backup.tar.gz",
+    "plain": "Extract a .tar.gz archive into the current folder, listing files as they come out.",
+    "when": "You downloaded a .tar.gz and need the files inside.",
+    "safety": "safe",
+    "tags": ["files", "archives"],
+    "flags": [
+      { "flag": "-x", "meaning": "extract" },
+      { "flag": "-z", "meaning": "decompress gzip" },
+      { "flag": "-v", "meaning": "verbose: list files as they extract" },
+      { "flag": "-f", "meaning": "use the archive file that follows" }
+    ],
+    "related": ["find-name"]
+  },
+  {
+    "id": "ssh-connect",
+    "command": "ssh user@192.168.1.10",
+    "plain": "Open an interactive shell on a remote machine over SSH.",
+    "when": "You need to run commands on a server or a lab VM.",
+    "safety": "safe",
+    "tags": ["ssh", "remote", "beginner"],
+    "flags": [],
+    "related": ["ssh-keygen", "scp-copy"]
+  },
+  {
+    "id": "scp-copy",
+    "command": "scp report.txt user@192.168.1.10:/home/user/",
+    "plain": "Copy a file to a remote machine over SSH.",
+    "when": "You need to move a file to or from a server without opening an interactive session.",
+    "safety": "safe",
+    "tags": ["ssh", "remote", "files"],
+    "flags": [
+      { "flag": "-r", "meaning": "copy folders recursively" },
+      { "flag": "-P", "meaning": "use a non-default SSH port (capital P)" }
+    ],
+    "related": ["ssh-connect"]
+  }
+]

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-mode="beginner">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CmdBook — the cheat sheet that explains itself</title>
+<meta name="description" content="A searchable, offline-first command cheat sheet that explains every flag in plain English. Built for beginners.">
+<meta name="theme-color" content="#0b0f14">
+<meta property="og:title" content="CmdBook — the cheat sheet that explains itself">
+<meta property="og:description" content="Search commands, understand every flag, copy what you need. Free, offline, and built for beginners.">
+<meta property="og:type" content="website">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="./" aria-label="CmdBook home">
+    <span class="brand-mark" aria-hidden="true">&gt;_</span>
+    <span class="brand-text">
+      <strong>CmdBook</strong>
+      <small>the cheat sheet that explains itself</small>
+    </span>
+  </a>
+  <div class="header-actions">
+    <button id="mode-toggle" class="pill" type="button" aria-pressed="false">Beginner</button>
+    <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch to light theme">☀️</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero">
+    <p class="eyebrow" id="hero-meta">Commands · topics · works offline</p>
+    <h1>Find the command.<br><em>Understand the flags.</em></h1>
+    <p class="lede">A cheat sheet for beginners that actually explains itself. Search, copy, and learn what each part does — even offline.</p>
+
+    <div class="search-wrap">
+      <span class="search-icon" aria-hidden="true">⌕</span>
+      <input id="search" type="search" placeholder="Search commands, flags, or tasks…" autocomplete="off" spellcheck="false" aria-label="Search commands">
+      <kbd>/</kbd>
+    </div>
+
+    <div id="topics" class="chips" role="group" aria-label="Filter by topic"></div>
+    <p id="result-count" class="result-count" aria-live="polite"></p>
+  </section>
+
+  <section class="explain-card" aria-labelledby="explain-title">
+    <div class="explain-head">
+      <h2 id="explain-title">Explain a command</h2>
+      <p>Paste anything — every token gets a plain-English meaning.</p>
+    </div>
+    <form id="explain-form" class="explain-form">
+      <input id="explain-input" type="text" placeholder="e.g. chmod -R 755 ./app" autocomplete="off" spellcheck="false" aria-label="Command to explain">
+      <button type="submit">Explain</button>
+    </form>
+    <div class="examples">
+      <span>Try:</span>
+      <button type="button" data-explain="chmod -R 755 ./app">chmod -R 755 ./app</button>
+      <button type="button" data-explain="tar -xzvf backup.tar.gz">tar -xzvf backup.tar.gz</button>
+      <button type="button" data-explain='git commit -m "fix login"'>git commit -m "fix login"</button>
+      <button type="button" data-explain="curl -I https://example.com">curl -I https://example.com</button>
+    </div>
+    <div id="explain-output" class="explain-output" aria-live="polite">
+      <p class="explain-hint">Type a command above to see what each part does.</p>
+    </div>
+  </section>
+
+  <main>
+    <section id="results" class="grid" aria-label="Command results"></section>
+    <div id="empty" class="empty" hidden>
+      <p class="empty-icon" aria-hidden="true">🔍</p>
+      <h2>No commands match that.</h2>
+      <p>Try a broader word, clear the search, or <button class="link" type="button" data-explain="ls -la">explain a command</button> instead.</p>
+    </div>
+  </main>
+
+</div>
+
+<footer class="site-footer">
+  <p><strong>CmdBook</strong> · MIT licensed · no tracking, no backend, works offline.</p>
+  <p class="muted">Every entry lives in <code>data/*.json</code> — add one with a pull request.</p>
+</footer>
+
+<noscript>
+  <p style="text-align:center;padding:2rem">CmdBook needs JavaScript to search and explain commands.</p>
+</noscript>
+
+<script src="data/bundle.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

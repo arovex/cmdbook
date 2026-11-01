@@ -1,0 +1,53 @@
+[
+  {
+    "id": "npx-serve",
+    "command": "npx serve .",
+    "plain": "Start a local static web server for the current folder, without installing anything globally.",
+    "when": "You need to preview an HTML/CSS/JS project and opening the file directly breaks fetch or modules.",
+    "safety": "safe",
+    "tags": ["web", "dev-server", "beginner"],
+    "flags": [],
+    "related": ["py-http-server", "curl-status"]
+  },
+  {
+    "id": "curl-status",
+    "command": "curl -s -o /dev/null -w \"%{http_code}\\n\" https://example.com",
+    "plain": "Make a request and print only the HTTP status code — 200, 301, 404, 500, and so on.",
+    "when": "You're checking whether an endpoint is alive without dumping the whole response.",
+    "safety": "safe",
+    "tags": ["web", "http", "testing"],
+    "flags": [
+      { "flag": "-s", "meaning": "silent: no progress bar" },
+      { "flag": "-o", "meaning": "write the body to a file (here /dev/null)" },
+      { "flag": "-w", "meaning": "print a format string after the request" }
+    ],
+    "related": ["curl-headers", "curl-post-json"]
+  },
+  {
+    "id": "jq-field",
+    "command": "curl -s https://api.example.com/items | jq '.items[0].name'",
+    "plain": "Fetch JSON from an API and pull out one field — here, the name of the first item.",
+    "when": "An API returns a huge JSON blob and you only need one value.",
+    "safety": "safe",
+    "tags": ["web", "json", "api"],
+    "flags": [
+      { "flag": "-r", "meaning": "raw output: no quotes around strings" },
+      { "flag": "-c", "meaning": "compact output" }
+    ],
+    "related": ["py-json-tool", "curl-status"]
+  },
+  {
+    "id": "curl-post-json",
+    "command": "curl -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"test\"}' https://api.example.com/items",
+    "plain": "Send a JSON body to an API with a POST request.",
+    "when": "You're testing a create/update endpoint from the terminal.",
+    "safety": "safe",
+    "tags": ["web", "http", "api"],
+    "flags": [
+      { "flag": "-X", "meaning": "HTTP method, e.g. POST or PUT" },
+      { "flag": "-H", "meaning": "add a request header" },
+      { "flag": "-d", "meaning": "request body" }
+    ],
+    "related": ["jq-field", "curl-status"]
+  }
+]

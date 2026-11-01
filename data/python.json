@@ -1,0 +1,107 @@
+[
+  {
+    "id": "py-venv",
+    "command": "python -m venv .venv",
+    "plain": "Create an isolated Python environment in a .venv folder so this project's packages don't leak into the system.",
+    "when": "The first thing to run in any new Python project. Keeps dependencies reproducible and avoids 'it works on my machine'.",
+    "safety": "safe",
+    "tags": ["python", "beginner", "environment"],
+    "flags": [
+      { "flag": "-m", "meaning": "run a standard-library module (venv)" }
+    ],
+    "related": ["py-activate", "pip-install"]
+  },
+  {
+    "id": "py-activate",
+    "command": "source .venv/bin/activate",
+    "plain": "Activate the virtual environment in your current shell so python and pip point at it.",
+    "when": "Right after creating a venv. On Windows PowerShell use .venv\\Scripts\\Activate.ps1 instead.",
+    "safety": "safe",
+    "tags": ["python", "beginner", "environment"],
+    "flags": [],
+    "related": ["py-venv", "pip-install"]
+  },
+  {
+    "id": "pip-install",
+    "command": "pip install -r requirements.txt",
+    "plain": "Install every package listed in requirements.txt at the pinned versions.",
+    "when": "You cloned a Python project and need its dependencies before running it.",
+    "safety": "safe",
+    "tags": ["python", "beginner", "packages"],
+    "flags": [
+      { "flag": "-r", "meaning": "read the package list from a file" },
+      { "flag": "--upgrade", "meaning": "upgrade already-installed packages" }
+    ],
+    "related": ["py-venv", "pip-freeze"]
+  },
+  {
+    "id": "pip-freeze",
+    "command": "pip freeze > requirements.txt",
+    "plain": "Write the exact versions of every installed package to requirements.txt.",
+    "when": "Before sharing a project, so other people can install the same versions.",
+    "safety": "safe",
+    "tags": ["python", "packages"],
+    "flags": [],
+    "related": ["pip-install"]
+  },
+  {
+    "id": "py-run",
+    "command": "python app.py",
+    "plain": "Run a Python script with the interpreter currently active in your shell.",
+    "when": "You want to start your program. If a venv is active, its Python is used.",
+    "safety": "safe",
+    "tags": ["python", "beginner"],
+    "flags": [],
+    "related": ["py-venv", "pytest-quiet"]
+  },
+  {
+    "id": "py-http-server",
+    "command": "python -m http.server 8000",
+    "plain": "Serve the current folder over HTTP at http://localhost:8000 — a one-line static web server.",
+    "when": "You need a local server for HTML, or want to share files on your LAN for testing.",
+    "safety": "caution",
+    "tags": ["python", "web", "beginner"],
+    "flags": [
+      { "flag": "-m", "meaning": "run a standard-library module (http.server)" }
+    ],
+    "related": ["npx-serve", "curl-status"]
+  },
+  {
+    "id": "py-json-tool",
+    "command": "python -m json.tool data.json",
+    "plain": "Pretty-print and validate a JSON file, or reformat it with indentation.",
+    "when": "A JSON file is one long line, or you need to check whether it's valid.",
+    "safety": "safe",
+    "tags": ["python", "json", "beginner"],
+    "flags": [
+      { "flag": "-m", "meaning": "run a standard-library module (json.tool)" }
+    ],
+    "related": ["jq-field"]
+  },
+  {
+    "id": "pytest-quiet",
+    "command": "pytest -q",
+    "plain": "Run the test suite quietly, printing only failures and a summary.",
+    "when": "You're iterating on code and want fast feedback without a wall of dots.",
+    "safety": "safe",
+    "tags": ["python", "testing"],
+    "flags": [
+      { "flag": "-q", "meaning": "quiet output" },
+      { "flag": "-k", "meaning": "only run tests matching an expression" },
+      { "flag": "--lf", "meaning": "rerun only the tests that failed last time" }
+    ],
+    "related": ["py-run"]
+  },
+  {
+    "id": "py-version",
+    "command": "python --version",
+    "plain": "Print the Python version that would run your code.",
+    "when": "A tutorial says 'requires Python 3.10+' and you need to check.",
+    "safety": "safe",
+    "tags": ["python", "beginner"],
+    "flags": [
+      { "flag": "--version", "meaning": "print the version and exit" }
+    ],
+    "related": ["py-run"]
+  }
+]

@@ -1,0 +1,504 @@
+{
+  "sudo": {
+    "desc": "Run a command as another user, usually root.",
+    "flags": {
+      "-u": "run as this user instead of root",
+      "-i": "start an interactive root shell",
+      "-E": "preserve the current environment"
+    }
+  },
+  "ls": {
+    "desc": "List directory contents.",
+    "flags": {
+      "-l": "long format: permissions, owner, size, date",
+      "-a": "include hidden dotfiles",
+      "-h": "human-readable sizes",
+      "-t": "sort by modification time",
+      "-R": "recurse into subfolders"
+    }
+  },
+  "cd": {
+    "desc": "Change the current directory.",
+    "flags": {}
+  },
+  "pwd": {
+    "desc": "Print the working directory.",
+    "flags": {}
+  },
+  "cp": {
+    "desc": "Copy files or folders.",
+    "flags": {
+      "-r": "recursive: copy folders",
+      "-i": "ask before overwriting",
+      "-v": "verbose"
+    }
+  },
+  "mv": {
+    "desc": "Move or rename files and folders.",
+    "flags": {
+      "-i": "ask before overwriting",
+      "-v": "verbose"
+    }
+  },
+  "rm": {
+    "desc": "Delete files or folders. There is no trash bin.",
+    "flags": {
+      "-r": "recursive: delete folders",
+      "-f": "force: never ask",
+      "-i": "ask before each delete",
+      "-v": "verbose"
+    }
+  },
+  "mkdir": {
+    "desc": "Create directories.",
+    "flags": {
+      "-p": "create parent folders and ignore existing ones",
+      "-v": "verbose"
+    }
+  },
+  "grep": {
+    "desc": "Search text for a pattern.",
+    "flags": {
+      "-r": "recurse through folders",
+      "-i": "ignore case",
+      "-n": "show line numbers",
+      "-E": "extended regular expressions",
+      "-I": "skip binary files",
+      "-v": "invert the match",
+      "-l": "list filenames only"
+    }
+  },
+  "find": {
+    "desc": "Search for files and folders.",
+    "flags": {
+      "-name": "match the filename",
+      "-type": "f = file, d = directory",
+      "-size": "match size, e.g. +10M",
+      "-exec": "run a command on each match"
+    }
+  },
+  "chmod": {
+    "desc": "Change file permissions.",
+    "flags": {
+      "-R": "apply recursively",
+      "+x": "add execute permission",
+      "-v": "verbose"
+    }
+  },
+  "chown": {
+    "desc": "Change a file's owner and group.",
+    "flags": {
+      "-R": "apply recursively"
+    }
+  },
+  "ps": {
+    "desc": "List running processes.",
+    "flags": {
+      "a": "show processes from all users",
+      "u": "user-oriented format",
+      "x": "include processes without a terminal"
+    }
+  },
+  "kill": {
+    "desc": "Send a signal to a process.",
+    "flags": {
+      "-9": "SIGKILL: force stop",
+      "-15": "SIGTERM: ask nicely (default)",
+      "-l": "list signal names"
+    }
+  },
+  "tar": {
+    "desc": "Create or extract archive files.",
+    "flags": {
+      "-x": "extract",
+      "-c": "create",
+      "-z": "gzip compression",
+      "-v": "verbose",
+      "-f": "use the archive file that follows",
+      "-t": "list contents"
+    }
+  },
+  "curl": {
+    "desc": "Transfer data from or to a URL.",
+    "flags": {
+      "-O": "save using the remote filename",
+      "-o": "save to a given filename",
+      "-I": "fetch headers only",
+      "-s": "silent: no progress bar",
+      "-L": "follow redirects",
+      "-X": "HTTP method",
+      "-H": "add a request header",
+      "-d": "request body",
+      "-w": "print a format string after the request"
+    }
+  },
+  "wget": {
+    "desc": "Download files over HTTP or FTP.",
+    "flags": {
+      "-O": "save as this filename",
+      "-q": "quiet",
+      "-c": "resume a partial download"
+    }
+  },
+  "ssh": {
+    "desc": "Open a shell on a remote machine.",
+    "flags": {
+      "-p": "port",
+      "-i": "identity (private key) file",
+      "-L": "local port forwarding",
+      "-v": "verbose"
+    }
+  },
+  "scp": {
+    "desc": "Copy files over SSH.",
+    "flags": {
+      "-r": "recursive",
+      "-P": "port (capital P)"
+    }
+  },
+  "df": {
+    "desc": "Show free disk space.",
+    "flags": {
+      "-h": "human-readable"
+    }
+  },
+  "du": {
+    "desc": "Show disk usage of folders.",
+    "flags": {
+      "-s": "summary only",
+      "-h": "human-readable"
+    }
+  },
+  "cat": {
+    "desc": "Print file contents.",
+    "flags": {
+      "-n": "number the lines"
+    }
+  },
+  "head": {
+    "desc": "Show the start of a file.",
+    "flags": {
+      "-n": "number of lines"
+    }
+  },
+  "tail": {
+    "desc": "Show the end of a file.",
+    "flags": {
+      "-f": "follow new lines as they appear",
+      "-n": "number of lines"
+    }
+  },
+  "echo": {
+    "desc": "Print text to the terminal.",
+    "flags": {
+      "-n": "no trailing newline"
+    }
+  },
+  "export": {
+    "desc": "Set an environment variable for this shell and its children.",
+    "flags": {}
+  },
+  "source": {
+    "desc": "Run a script in the current shell, so its variables persist.",
+    "flags": {}
+  },
+  "systemctl": {
+    "desc": "Control system services.",
+    "flags": {
+      "status": "show service state",
+      "start": "start the service",
+      "stop": "stop the service",
+      "enable": "start automatically on boot"
+    }
+  },
+  "apt": {
+    "desc": "Debian/Ubuntu package manager.",
+    "flags": {
+      "install": "install packages",
+      "update": "refresh the package index",
+      "upgrade": "upgrade installed packages"
+    }
+  },
+  "git": {
+    "desc": "Distributed version control.",
+    "flags": {
+      "-C": "run as if git started in this directory"
+    }
+  },
+  "git clone": {
+    "desc": "Copy a remote repository to your machine.",
+    "flags": {
+      "--depth": "shallow clone with fewer commits",
+      "--branch": "clone a specific branch"
+    }
+  },
+  "git status": {
+    "desc": "Show what changed and what is staged.",
+    "flags": {
+      "-s": "short format"
+    }
+  },
+  "git add": {
+    "desc": "Stage changes for the next commit.",
+    "flags": {
+      "-A": "stage all changes",
+      "-p": "stage interactively"
+    }
+  },
+  "git commit": {
+    "desc": "Record staged changes as a commit.",
+    "flags": {
+      "-m": "commit message",
+      "-a": "stage tracked files first",
+      "--amend": "replace the previous commit"
+    }
+  },
+  "git push": {
+    "desc": "Upload commits to a remote.",
+    "flags": {
+      "-u": "set the upstream branch",
+      "--force": "overwrite remote history (danger)",
+      "--force-with-lease": "safer force push"
+    }
+  },
+  "git pull": {
+    "desc": "Fetch and integrate remote changes.",
+    "flags": {
+      "--rebase": "replay your commits on top",
+      "--ff-only": "only fast-forward"
+    }
+  },
+  "git switch": {
+    "desc": "Change branches.",
+    "flags": {
+      "-c": "create and switch",
+      "-": "switch to the previous branch"
+    }
+  },
+  "git log": {
+    "desc": "Show commit history.",
+    "flags": {
+      "--oneline": "one line per commit",
+      "--graph": "draw the branch graph",
+      "--all": "include all branches"
+    }
+  },
+  "git diff": {
+    "desc": "Show unstaged changes.",
+    "flags": {
+      "--staged": "show staged changes",
+      "--stat": "summary of files changed"
+    }
+  },
+  "git stash": {
+    "desc": "Park uncommitted changes for later.",
+    "flags": {
+      "pop": "restore and drop the latest stash",
+      "list": "show all stashes"
+    }
+  },
+  "git reset": {
+    "desc": "Move the branch pointer; can discard work.",
+    "flags": {
+      "--hard": "discard changes (danger)",
+      "--soft": "keep changes staged",
+      "--mixed": "keep changes unstaged"
+    }
+  },
+  "git revert": {
+    "desc": "Create a new commit that undoes an old one.",
+    "flags": {
+      "--no-edit": "accept the generated message"
+    }
+  },
+  "git remote": {
+    "desc": "Manage remote repositories.",
+    "flags": {
+      "-v": "show remote URLs"
+    }
+  },
+  "python": {
+    "desc": "Run Python code.",
+    "flags": {
+      "-m": "run a module",
+      "-c": "run a one-liner",
+      "--version": "print the version"
+    }
+  },
+  "pip": {
+    "desc": "Install and manage Python packages.",
+    "flags": {
+      "-r": "read packages from a requirements file",
+      "--upgrade": "upgrade packages",
+      "--user": "install for the current user only"
+    }
+  },
+  "pip install": {
+    "desc": "Install Python packages.",
+    "flags": {
+      "-r": "read packages from a requirements file",
+      "--upgrade": "upgrade packages"
+    }
+  },
+  "pip freeze": {
+    "desc": "List installed packages with exact versions.",
+    "flags": {}
+  },
+  "pytest": {
+    "desc": "Run Python tests.",
+    "flags": {
+      "-q": "quiet output",
+      "-v": "verbose output",
+      "-k": "only tests matching an expression",
+      "--lf": "rerun only the last failures"
+    }
+  },
+  "npm": {
+    "desc": "Node package manager.",
+    "flags": {}
+  },
+  "npm install": {
+    "desc": "Install the project's Node dependencies.",
+    "flags": {
+      "--save-dev": "install as a development dependency"
+    }
+  },
+  "npm run": {
+    "desc": "Run a script defined in package.json.",
+    "flags": {}
+  },
+  "npx": {
+    "desc": "Run a package binary without installing it globally.",
+    "flags": {
+      "-y": "skip the install prompt"
+    }
+  },
+  "node": {
+    "desc": "Run JavaScript outside the browser.",
+    "flags": {
+      "--version": "print the version"
+    }
+  },
+  "jq": {
+    "desc": "Query and transform JSON.",
+    "flags": {
+      "-r": "raw output: no quotes around strings",
+      "-c": "compact output"
+    }
+  },
+  "openssl": {
+    "desc": "Cryptography toolkit: keys, certificates, hashes.",
+    "flags": {
+      "rand": "generate random bytes",
+      "s_client": "inspect a TLS connection",
+      "x509": "inspect certificates"
+    }
+  },
+  "openssl rand": {
+    "desc": "Generate random bytes.",
+    "flags": {
+      "-hex": "output hexadecimal",
+      "-base64": "output base64"
+    }
+  },
+  "openssl s_client": {
+    "desc": "Open and inspect a TLS connection.",
+    "flags": {
+      "-connect": "host:port to connect to",
+      "-servername": "SNI hostname to present",
+      "-showcerts": "print the full certificate chain"
+    }
+  },
+  "ssh-keygen": {
+    "desc": "Create or manage SSH keys.",
+    "flags": {
+      "-t": "key type, e.g. ed25519",
+      "-C": "comment, usually your email",
+      "-f": "output file"
+    }
+  },
+  "sha256sum": {
+    "desc": "Print or check SHA-256 checksums.",
+    "flags": {
+      "-c": "check files against a checksum list"
+    }
+  },
+  "nmap": {
+    "desc": "Network scanner. Only scan hosts you own or have permission to test.",
+    "flags": {
+      "-sV": "detect service versions",
+      "-p": "ports to scan",
+      "-sT": "TCP connect scan",
+      "-Pn": "skip host discovery"
+    }
+  },
+  "ufw": {
+    "desc": "Simple firewall manager on Ubuntu.",
+    "flags": {}
+  },
+  "ufw allow": {
+    "desc": "Allow traffic on a port.",
+    "flags": {
+      "22/tcp": "port and protocol to allow"
+    }
+  },
+  "ufw deny": {
+    "desc": "Block traffic on a port.",
+    "flags": {}
+  },
+  "ufw status": {
+    "desc": "Show the current firewall rules.",
+    "flags": {
+      "verbose": "show numbered rules"
+    }
+  },
+  "dig": {
+    "desc": "Query DNS records.",
+    "flags": {
+      "+short": "answers only",
+      "+trace": "follow the delegation chain"
+    }
+  },
+  "whois": {
+    "desc": "Look up domain registration data.",
+    "flags": {}
+  },
+  "base64": {
+    "desc": "Encode or decode base64.",
+    "flags": {
+      "-d": "decode",
+      "-w": "wrap width"
+    }
+  },
+  "docker": {
+    "desc": "Build and run containers.",
+    "flags": {}
+  },
+  "docker run": {
+    "desc": "Start a container from an image.",
+    "flags": {
+      "-d": "detached: run in the background",
+      "-p": "publish a port, host:container",
+      "--name": "name the container",
+      "--rm": "remove it when it exits"
+    }
+  },
+  "docker ps": {
+    "desc": "List containers.",
+    "flags": {
+      "-a": "include stopped containers"
+    }
+  },
+  "docker build": {
+    "desc": "Build an image from a Dockerfile.",
+    "flags": {
+      "-t": "tag the image"
+    }
+  },
+  "docker exec": {
+    "desc": "Run a command inside a running container.",
+    "flags": {
+      "-it": "interactive terminal"
+    }
+  }
+}

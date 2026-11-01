@@ -1,0 +1,155 @@
+[
+  {
+    "id": "git-clone",
+    "command": "git clone https://github.com/user/repo.git",
+    "plain": "Download a copy of a remote repository, including its full history, into a new folder.",
+    "when": "You want to work on a project that already exists on GitHub.",
+    "safety": "safe",
+    "tags": ["git", "beginner", "remote"],
+    "flags": [],
+    "related": ["git-push", "git-status"]
+  },
+  {
+    "id": "git-status",
+    "command": "git status",
+    "plain": "Show what changed, what is staged, and which branch you're on.",
+    "when": "Before every commit. It's the 'where am I?' command of Git.",
+    "safety": "safe",
+    "tags": ["git", "beginner"],
+    "flags": [
+      { "flag": "-s", "meaning": "short format" }
+    ],
+    "related": ["git-add", "git-commit"]
+  },
+  {
+    "id": "git-add",
+    "command": "git add .",
+    "plain": "Stage every change in the current folder for the next commit.",
+    "when": "You've finished a chunk of work and want to include all of it in one commit.",
+    "safety": "safe",
+    "tags": ["git", "beginner"],
+    "flags": [
+      { "flag": "-A", "meaning": "stage all changes, including deletions" },
+      { "flag": "-p", "meaning": "choose hunks interactively" }
+    ],
+    "related": ["git-commit", "git-status"]
+  },
+  {
+    "id": "git-commit",
+    "command": "git commit -m \"fix login redirect\"",
+    "plain": "Save the staged changes as a commit with a short message.",
+    "when": "You've staged the right files and want a checkpoint you can return to.",
+    "safety": "safe",
+    "tags": ["git", "beginner"],
+    "flags": [
+      { "flag": "-m", "meaning": "commit message" },
+      { "flag": "-a", "meaning": "stage tracked files first" },
+      { "flag": "--amend", "meaning": "replace the previous commit" }
+    ],
+    "related": ["git-add", "git-push"]
+  },
+  {
+    "id": "git-push",
+    "command": "git push -u origin main",
+    "plain": "Upload your commits to the remote named origin and remember main as the upstream branch.",
+    "when": "Your commit is ready to share, or you're publishing a new local repo for the first time.",
+    "safety": "safe",
+    "tags": ["git", "beginner", "remote"],
+    "flags": [
+      { "flag": "-u", "meaning": "set the upstream branch for future pushes" },
+      { "flag": "--force-with-lease", "meaning": "force push only if nobody else pushed" }
+    ],
+    "related": ["git-pull-rebase", "git-clone"]
+  },
+  {
+    "id": "git-pull-rebase",
+    "command": "git pull --rebase",
+    "plain": "Fetch remote changes and replay your local commits on top of them, keeping history linear.",
+    "when": "The remote moved ahead and you want to avoid a noisy merge commit.",
+    "safety": "safe",
+    "tags": ["git", "remote", "intermediate"],
+    "flags": [
+      { "flag": "--rebase", "meaning": "replay your commits instead of merging" },
+      { "flag": "--ff-only", "meaning": "refuse unless it can fast-forward" }
+    ],
+    "related": ["git-push", "git-log-graph"]
+  },
+  {
+    "id": "git-switch-c",
+    "command": "git switch -c feature/login",
+    "plain": "Create a new branch and switch to it in one step.",
+    "when": "You're starting a feature or fix and don't want to commit straight to main.",
+    "safety": "safe",
+    "tags": ["git", "branches", "beginner"],
+    "flags": [
+      { "flag": "-c", "meaning": "create the branch before switching" },
+      { "flag": "-", "meaning": "switch back to the previous branch" }
+    ],
+    "related": ["git-status", "git-log-graph"]
+  },
+  {
+    "id": "git-log-graph",
+    "command": "git log --oneline --graph --all",
+    "plain": "Show a compact, visual history of every branch as an ASCII graph.",
+    "when": "You need to understand how branches diverged or where a commit went.",
+    "safety": "safe",
+    "tags": ["git", "history", "intermediate"],
+    "flags": [
+      { "flag": "--oneline", "meaning": "one line per commit" },
+      { "flag": "--graph", "meaning": "draw the branch structure" },
+      { "flag": "--all", "meaning": "include every branch" }
+    ],
+    "related": ["git-diff", "git-pull-rebase"]
+  },
+  {
+    "id": "git-diff",
+    "command": "git diff",
+    "plain": "Show line-by-line changes that are not staged yet.",
+    "when": "Before staging, to check exactly what you're about to commit.",
+    "safety": "safe",
+    "tags": ["git", "history", "beginner"],
+    "flags": [
+      { "flag": "--staged", "meaning": "show staged changes instead" },
+      { "flag": "--stat", "meaning": "summary of files changed" }
+    ],
+    "related": ["git-add", "git-status"]
+  },
+  {
+    "id": "git-stash",
+    "command": "git stash",
+    "plain": "Park your uncommitted changes so you can switch branches with a clean working tree.",
+    "when": "You need to pull or switch branches but aren't ready to commit. Restore with git stash pop.",
+    "safety": "safe",
+    "tags": ["git", "intermediate"],
+    "flags": [
+      { "flag": "pop", "meaning": "restore the latest stash and remove it" },
+      { "flag": "list", "meaning": "show all stashes" }
+    ],
+    "related": ["git-status", "git-switch-c"]
+  },
+  {
+    "id": "git-reset-hard",
+    "command": "git reset --hard HEAD~1",
+    "plain": "Throw away the last commit and every uncommitted change, moving the branch back one step.",
+    "when": "Almost never. If you only want to undo a commit, use git revert instead — it keeps history.",
+    "safety": "danger",
+    "tags": ["git", "danger"],
+    "flags": [
+      { "flag": "--hard", "meaning": "discard working tree changes too" },
+      { "flag": "--soft", "meaning": "move the branch but keep changes staged" }
+    ],
+    "related": ["git-revert", "git-stash"]
+  },
+  {
+    "id": "git-revert",
+    "command": "git revert HEAD",
+    "plain": "Create a new commit that undoes an earlier commit, without rewriting history.",
+    "when": "You need to undo something that's already pushed and shared.",
+    "safety": "safe",
+    "tags": ["git", "history", "intermediate"],
+    "flags": [
+      { "flag": "--no-edit", "meaning": "accept the generated message" }
+    ],
+    "related": ["git-reset-hard", "git-log-graph"]
+  }
+]

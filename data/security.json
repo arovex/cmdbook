@@ -1,0 +1,135 @@
+[
+  {
+    "id": "ssh-keygen",
+    "command": "ssh-keygen -t ed25519 -C \"you@example.com\"",
+    "plain": "Generate a modern Ed25519 SSH key pair — a private key on your machine and a public key you can share.",
+    "when": "You're setting up SSH or GitHub access and want key-based login instead of a password.",
+    "safety": "safe",
+    "tags": ["ssh", "crypto", "beginner"],
+    "flags": [
+      { "flag": "-t", "meaning": "key type (ed25519 is the modern default)" },
+      { "flag": "-C", "meaning": "comment, usually your email" },
+      { "flag": "-f", "meaning": "output file path" }
+    ],
+    "related": ["chmod-600", "ssh-connect"]
+  },
+  {
+    "id": "openssl-rand",
+    "command": "openssl rand -hex 32",
+    "plain": "Generate 32 random bytes and print them as 64 hex characters — a strong secret for tokens or keys.",
+    "when": "You need a random API key, session secret, or password salt and don't want to invent one.",
+    "safety": "safe",
+    "tags": ["crypto", "secrets", "beginner"],
+    "flags": [
+      { "flag": "-hex", "meaning": "output hexadecimal" },
+      { "flag": "-base64", "meaning": "output base64 instead" }
+    ],
+    "related": ["sha256sum", "ssh-keygen"]
+  },
+  {
+    "id": "sha256sum",
+    "command": "sha256sum ubuntu.iso",
+    "plain": "Print the SHA-256 fingerprint of a file so you can compare it with the published checksum.",
+    "when": "You downloaded an installer or release and want to verify it wasn't corrupted or tampered with.",
+    "safety": "safe",
+    "tags": ["crypto", "integrity", "beginner"],
+    "flags": [
+      { "flag": "-c", "meaning": "check files against a checksum list" }
+    ],
+    "related": ["openssl-rand"]
+  },
+  {
+    "id": "nmap-sv",
+    "command": "nmap -sV 192.168.1.10",
+    "plain": "Probe a host and try to identify the service and version running on each open port.",
+    "when": "You're mapping a machine you own or have written permission to test. Never scan networks that aren't yours.",
+    "safety": "caution",
+    "tags": ["network", "scanning", "intermediate"],
+    "flags": [
+      { "flag": "-sV", "meaning": "detect service versions" },
+      { "flag": "-p", "meaning": "ports to scan, e.g. -p 22,80,443" },
+      { "flag": "-Pn", "meaning": "skip host discovery, assume it's up" }
+    ],
+    "related": ["dig-short"]
+  },
+  {
+    "id": "ufw-allow",
+    "command": "sudo ufw allow 22/tcp",
+    "plain": "Open TCP port 22 in the Ubuntu firewall so SSH connections are allowed.",
+    "when": "You enabled ufw and locked yourself out of SSH — allow the port before enabling the firewall.",
+    "safety": "caution",
+    "tags": ["network", "firewall", "linux"],
+    "flags": [
+      { "flag": "allow", "meaning": "permit traffic on this port" },
+      { "flag": "deny", "meaning": "block traffic on this port" },
+      { "flag": "status", "meaning": "show current rules" }
+    ],
+    "related": ["ssh-connect"]
+  },
+  {
+    "id": "curl-headers",
+    "command": "curl -I https://example.com",
+    "plain": "Fetch only the HTTP response headers, without downloading the page body.",
+    "when": "You want to check status codes, redirects, caching, or security headers quickly.",
+    "safety": "safe",
+    "tags": ["web", "http", "beginner"],
+    "flags": [
+      { "flag": "-I", "meaning": "send a HEAD request and show headers only" },
+      { "flag": "-L", "meaning": "follow redirects" }
+    ],
+    "related": ["curl-status", "openssl-sclient"]
+  },
+  {
+    "id": "base64-decode",
+    "command": "base64 -d payload.b64",
+    "plain": "Decode a base64 file back into its original bytes.",
+    "when": "You found a blob of base64 in a log, email, or CTF challenge and need the real content.",
+    "safety": "safe",
+    "tags": ["encoding", "forensics", "beginner"],
+    "flags": [
+      { "flag": "-d", "meaning": "decode instead of encode" }
+    ],
+    "related": ["grep-secrets", "openssl-rand"]
+  },
+  {
+    "id": "dig-short",
+    "command": "dig +short example.com",
+    "plain": "Ask DNS for a domain's records and print only the answers.",
+    "when": "You need to see what IP a domain resolves to, without dig's full output.",
+    "safety": "safe",
+    "tags": ["network", "dns", "beginner"],
+    "flags": [
+      { "flag": "+short", "meaning": "answers only" },
+      { "flag": "+trace", "meaning": "follow the DNS delegation chain" }
+    ],
+    "related": ["nmap-sv"]
+  },
+  {
+    "id": "openssl-sclient",
+    "command": "openssl s_client -connect example.com:443 -servername example.com",
+    "plain": "Open a TLS connection and print the certificate chain and handshake details.",
+    "when": "A site's HTTPS is failing, or you need to check certificate expiry and SNI behaviour.",
+    "safety": "safe",
+    "tags": ["tls", "network", "intermediate"],
+    "flags": [
+      { "flag": "-connect", "meaning": "host:port to connect to" },
+      { "flag": "-servername", "meaning": "SNI hostname to present" }
+    ],
+    "related": ["curl-headers"]
+  },
+  {
+    "id": "grep-secrets",
+    "command": "grep -rInE \"(api[_-]?key|secret|token)\\s*=\" .",
+    "plain": "Scan the current folder for lines that look like hardcoded API keys, secrets, or tokens.",
+    "when": "Right before pushing a repo public. Catches the classic 'oops, my key is in the code' mistake.",
+    "safety": "caution",
+    "tags": ["secrets", "git", "intermediate"],
+    "flags": [
+      { "flag": "-r", "meaning": "recurse through folders" },
+      { "flag": "-I", "meaning": "skip binary files" },
+      { "flag": "-n", "meaning": "show line numbers" },
+      { "flag": "-E", "meaning": "extended regular expressions" }
+    ],
+    "related": ["grep-search", "base64-decode"]
+  }
+]
