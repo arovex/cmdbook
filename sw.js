@@ -1,5 +1,5 @@
-/* CmdBook service worker — offline-first for the shell, fresh data when online. */
-const CACHE = 'cmdbook-v1';
+/* CmdBook service worker — cache the shell and refresh content when online. */
+const CACHE = 'cmdbook-v3';
 const CORE = [
   './',
   './index.html',
@@ -35,27 +35,21 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Data changes with every content update: try network first, fall back to cache.
-  if (url.pathname.endsWith('/data/bundle.js')) {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
+  event.respondWith(
+    fetch(request)
+      .then((response) => {
+        if (response.ok) {
           const copy = response.clone();
           caches.open(CACHE).then((cache) => cache.put(request, copy));
-          return response;
+        }
+        return response;
+      })
+      .catch(() =>
+        caches.match(request).then((cached) => {
+          if (cached) return cached;
+          if (request.mode === 'navigate') return caches.match('./index.html');
+          return Response.error();
         })
-        .catch(() => caches.match(request))
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-      return fetch(request).catch(() => {
-        if (request.mode === 'navigate') return caches.match('./index.html');
-        return Response.error();
-      });
-    })
+      )
   );
 });

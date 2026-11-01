@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explain a command — CmdBook</title>
+<meta name="description" content="Paste any shell command and get a plain-English explanation of the program, its flags, arguments, and pipeline.">
+<meta name="theme-color" content="#0d1117">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="explain">
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">&gt;_</span>
+      <span class="brand-name">CmdBook</span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="linux.html">Linux</a>
+      <a href="git.html">Git</a>
+      <a href="python.html">Python</a>
+      <a href="security.html">Security</a>
+      <a href="web.html">Web</a>
+      <a href="explain.html" aria-current="page">Explain</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="header-actions">
+      <button id="mode-toggle" class="text-btn" type="button" aria-pressed="false">Detailed</button>
+      <button id="theme-toggle" class="text-btn" type="button">Light</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap wrap-narrow">
+  <header class="page-head">
+    <h1>Explain a command</h1>
+    <p>Paste a command to see what each token does. Pipelines, combined short flags, and octal permissions are handled.</p>
+  </header>
+
+  <section class="panel" aria-label="Command explainer">
+    <form id="explain-form" class="explain-form">
+      <input id="explain-input" type="text" placeholder="chmod -R 755 ./app" autocomplete="off" spellcheck="false" aria-label="Command to explain">
+      <button type="submit">Explain</button>
+    </form>
+    <div class="examples">
+      <span>Examples</span>
+      <button type="button" data-explain="chmod -R 755 ./app">chmod -R 755 ./app</button>
+      <button type="button" data-explain="tar -xzvf backup.tar.gz">tar -xzvf backup.tar.gz</button>
+      <button type="button" data-explain='git commit -m "fix login"'>git commit -m "fix login"</button>
+      <button type="button" data-explain="curl -s https://api.example.com/items | jq '.items[0].name'">curl … | jq</button>
+      <button type="button" data-explain="rm -rf /">rm -rf /</button>
+    </div>
+    <div id="explain-output" class="explain-output" aria-live="polite">
+      <p class="hint">Enter a command above to see a breakdown of each part.</p>
+    </div>
+  </section>
+
+  <section class="prose">
+    <h2>How it works</h2>
+    <p>The input is split on whitespace, respecting quotes, and then split again on unquoted pipes. The first token of each segment is looked up as a program, and the remaining tokens are classified as flags, arguments, URLs, paths, or permission modes.</p>
+    <ul>
+      <li>Programs and their flags live in <code>data/commands.json</code>.</li>
+      <li>Combined short flags such as <code>-xzvf</code> are expanded into their individual flags when every letter is known.</li>
+      <li>Numeric modes passed to <code>chmod</code> are decoded into owner, group, and other permissions.</li>
+      <li>A small set of destructive patterns triggers a warning before you copy anything.</li>
+    </ul>
+
+    <h2>Coverage</h2>
+    <p>The dictionary covers the commands used in the entries on this site. If a program or flag is missing, the explainer labels it as unknown rather than guessing. That is intentional: a wrong explanation is worse than no explanation.</p>
+
+    <h2>Adding a command</h2>
+    <p>Add a program and its flags to <code>data/commands.json</code>, then run <code>python scripts/build_bundle.py</code>. The format is documented on the <a href="about.html#contributing">contributing</a> page.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p>CmdBook — command reference with plain-English explanations.</p>
+    <p><a href="about.html">About</a> · <a href="LICENSE">MIT License</a></p>
+  </div>
+</footer>
+
+<script src="data/bundle.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

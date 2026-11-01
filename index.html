@@ -1,91 +1,105 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" data-mode="beginner">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CmdBook — the cheat sheet that explains itself</title>
-<meta name="description" content="A searchable, offline-first command cheat sheet that explains every flag in plain English. Built for beginners.">
-<meta name="theme-color" content="#0b0f14">
-<meta property="og:title" content="CmdBook — the cheat sheet that explains itself">
-<meta property="og:description" content="Search commands, understand every flag, copy what you need. Free, offline, and built for beginners.">
-<meta property="og:type" content="website">
+<title>CmdBook — command reference with plain-English explanations</title>
+<meta name="description" content="Search commands for Linux, Git, Python, security, and web. Each entry explains what it does, when to use it, and what every flag means.">
+<meta name="theme-color" content="#0d1117">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-page="home">
 
 <header class="site-header">
-  <a class="brand" href="./" aria-label="CmdBook home">
-    <span class="brand-mark" aria-hidden="true">&gt;_</span>
-    <span class="brand-text">
-      <strong>CmdBook</strong>
-      <small>the cheat sheet that explains itself</small>
-    </span>
-  </a>
-  <div class="header-actions">
-    <button id="mode-toggle" class="pill" type="button" aria-pressed="false">Beginner</button>
-    <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch to light theme">☀️</button>
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">&gt;_</span>
+      <span class="brand-name">CmdBook</span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="linux.html">Linux</a>
+      <a href="git.html">Git</a>
+      <a href="python.html">Python</a>
+      <a href="security.html">Security</a>
+      <a href="web.html">Web</a>
+      <a href="explain.html">Explain</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="header-actions">
+      <button id="mode-toggle" class="text-btn" type="button" aria-pressed="false">Detailed</button>
+      <button id="theme-toggle" class="text-btn" type="button">Light</button>
+    </div>
   </div>
 </header>
 
-<div class="wrap">
+<main class="wrap">
 
   <section class="hero">
-    <p class="eyebrow" id="hero-meta">Commands · topics · works offline</p>
-    <h1>Find the command.<br><em>Understand the flags.</em></h1>
-    <p class="lede">A cheat sheet for beginners that actually explains itself. Search, copy, and learn what each part does — even offline.</p>
+    <p class="hero-meta" id="hero-meta"></p>
+    <h1>Command reference, explained.</h1>
+    <p class="lede">Search commands for Linux, Git, Python, security, and web. Each entry says what it does, when to use it, and what every flag means.</p>
 
     <div class="search-wrap">
-      <span class="search-icon" aria-hidden="true">⌕</span>
-      <input id="search" type="search" placeholder="Search commands, flags, or tasks…" autocomplete="off" spellcheck="false" aria-label="Search commands">
+      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input id="search" type="search" placeholder="Search commands, flags, or tasks" autocomplete="off" spellcheck="false" aria-label="Search commands">
       <kbd>/</kbd>
     </div>
-
-    <div id="topics" class="chips" role="group" aria-label="Filter by topic"></div>
     <p id="result-count" class="result-count" aria-live="polite"></p>
   </section>
 
-  <section class="explain-card" aria-labelledby="explain-title">
-    <div class="explain-head">
+  <section class="panel explain-panel" aria-labelledby="explain-title">
+    <div class="panel-head">
       <h2 id="explain-title">Explain a command</h2>
-      <p>Paste anything — every token gets a plain-English meaning.</p>
+      <a href="explain.html">Open full page</a>
     </div>
     <form id="explain-form" class="explain-form">
-      <input id="explain-input" type="text" placeholder="e.g. chmod -R 755 ./app" autocomplete="off" spellcheck="false" aria-label="Command to explain">
+      <input id="explain-input" type="text" placeholder="chmod -R 755 ./app" autocomplete="off" spellcheck="false" aria-label="Command to explain">
       <button type="submit">Explain</button>
     </form>
     <div class="examples">
-      <span>Try:</span>
+      <span>Examples</span>
       <button type="button" data-explain="chmod -R 755 ./app">chmod -R 755 ./app</button>
       <button type="button" data-explain="tar -xzvf backup.tar.gz">tar -xzvf backup.tar.gz</button>
       <button type="button" data-explain='git commit -m "fix login"'>git commit -m "fix login"</button>
       <button type="button" data-explain="curl -I https://example.com">curl -I https://example.com</button>
     </div>
     <div id="explain-output" class="explain-output" aria-live="polite">
-      <p class="explain-hint">Type a command above to see what each part does.</p>
+      <p class="hint">Paste any command to see a breakdown of each part.</p>
     </div>
   </section>
 
-  <main>
-    <section id="results" class="grid" aria-label="Command results"></section>
-    <div id="empty" class="empty" hidden>
-      <p class="empty-icon" aria-hidden="true">🔍</p>
-      <h2>No commands match that.</h2>
-      <p>Try a broader word, clear the search, or <button class="link" type="button" data-explain="ls -la">explain a command</button> instead.</p>
+  <section class="section" aria-labelledby="topics-title">
+    <div class="section-head">
+      <h2 id="topics-title">Browse by topic</h2>
     </div>
-  </main>
+    <div id="topic-cards" class="topic-grid"></div>
+  </section>
 
-</div>
+  <section class="section" aria-labelledby="all-title">
+    <div class="section-head">
+      <h2 id="all-title">All commands</h2>
+      <a href="about.html#contributing">Add an entry</a>
+    </div>
+    <section id="results" class="grid" aria-label="All commands"></section>
+    <div id="empty" class="empty" hidden>
+      <h2>No commands match that.</h2>
+      <p>Try a different word, or <button class="link-btn" type="button" data-clear>clear the search</button>.</p>
+    </div>
+  </section>
+
+</main>
 
 <footer class="site-footer">
-  <p><strong>CmdBook</strong> · MIT licensed · no tracking, no backend, works offline.</p>
-  <p class="muted">Every entry lives in <code>data/*.json</code> — add one with a pull request.</p>
+  <div class="footer-inner">
+    <p>CmdBook — command reference with plain-English explanations.</p>
+    <p><a href="about.html">About</a> · <a href="LICENSE">MIT License</a></p>
+  </div>
 </footer>
-
-<noscript>
-  <p style="text-align:center;padding:2rem">CmdBook needs JavaScript to search and explain commands.</p>
-</noscript>
 
 <script src="data/bundle.js"></script>
 <script src="app.js"></script>

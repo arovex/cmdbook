@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — CmdBook</title>
+<meta name="description" content="How CmdBook is structured, how entries are written, and how to contribute a command.">
+<meta name="theme-color" content="#0d1117">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="about">
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">&gt;_</span>
+      <span class="brand-name">CmdBook</span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="linux.html">Linux</a>
+      <a href="git.html">Git</a>
+      <a href="python.html">Python</a>
+      <a href="security.html">Security</a>
+      <a href="web.html">Web</a>
+      <a href="explain.html">Explain</a>
+      <a href="about.html" aria-current="page">About</a>
+    </nav>
+    <div class="header-actions">
+      <button id="mode-toggle" class="text-btn" type="button" aria-pressed="false">Detailed</button>
+      <button id="theme-toggle" class="text-btn" type="button">Light</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap wrap-narrow">
+  <header class="page-head">
+    <h1>About CmdBook</h1>
+    <p>A command reference that explains the parts people usually have to look up twice.</p>
+  </header>
+
+  <section class="prose">
+    <h2>What this is</h2>
+    <p>CmdBook is a static reference for commands used in day-to-day development and security work. Each entry has four parts: the command, a plain-English description, a note on when to use it, and a breakdown of its flags. Entries are grouped by topic and can be searched from any page.</p>
+    <p>The explainer on the <a href="explain.html">Explain</a> page uses the same data. It splits a command into tokens, identifies the program, and resolves flags from the dictionary in <code>data/commands.json</code>. Unknown programs and flags are labelled as unknown instead of being guessed.</p>
+
+    <h2>Entry format</h2>
+    <p>Entries live in <code>data/&lt;topic&gt;.json</code> as arrays. A minimal entry looks like this:</p>
+    <pre><code>{
+  "id": "tar-extract",
+  "command": "tar -xzvf backup.tar.gz",
+  "plain": "Extract a .tar.gz archive into the current folder.",
+  "when": "You downloaded a .tar.gz and need the files inside.",
+  "safety": "safe",
+  "tags": ["files", "archives"],
+  "flags": [
+    { "flag": "-x", "meaning": "extract" },
+    { "flag": "-z", "meaning": "decompress gzip" }
+  ],
+  "related": ["find-name"]
+}</code></pre>
+    <p>Required fields are <code>id</code>, <code>command</code>, <code>plain</code>, <code>when</code>, <code>safety</code>, and <code>tags</code>. <code>safety</code> is one of <code>safe</code>, <code>caution</code>, or <code>danger</code>. <code>related</code> must reference IDs that exist.</p>
+
+    <h2 id="contributing">Contributing</h2>
+    <p>To add a command:</p>
+    <ul>
+      <li>Add the entry to the matching topic file in <code>data/</code>.</li>
+      <li>If the explainer should understand the program, add it to <code>data/commands.json</code>.</li>
+      <li>Run <code>python scripts/build_bundle.py</code> to validate the data and regenerate <code>data/bundle.js</code>.</li>
+      <li>Run <code>python scripts/build_bundle.py --check</code> before committing. CI runs the same check.</li>
+    </ul>
+    <p>Keep <code>plain</code> focused on what the command does, and use <code>when</code> for the situation that makes you reach for it. Mark destructive commands as <code>danger</code>.</p>
+
+    <h2>Project layout</h2>
+    <pre><code>index.html            home page and search
+linux.html            topic pages
+git.html
+python.html
+security.html
+web.html
+explain.html          full command explainer
+about.html
+styles.css
+app.js                search, cards, explainer
+sw.js                 service worker cache
+data/                 entries and the program dictionary
+scripts/              data validation and bundle build</code></pre>
+
+    <h2>License</h2>
+    <p>MIT. See <a href="LICENSE">LICENSE</a>.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p>CmdBook — command reference with plain-English explanations.</p>
+    <p><a href="about.html">About</a> · <a href="LICENSE">MIT License</a></p>
+  </div>
+</footer>
+
+<script src="data/bundle.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

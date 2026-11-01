@@ -1,7 +1,7 @@
 {
-  "name": "CmdBook — the cheat sheet that explains itself",
+  "name": "CmdBook — command reference",
   "short_name": "CmdBook",
-  "description": "A searchable, offline-first command cheat sheet that explains every flag in plain English.",
+  "description": "A searchable command reference with plain-English explanations of commands and flags.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

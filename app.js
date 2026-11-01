@@ -4,26 +4,38 @@
 
   var DATA = window.CMDBOOK_DATA || { entries: [], commands: {} };
   var TOPIC_LABELS = { linux: 'Linux', git: 'Git', python: 'Python', security: 'Security', web: 'Web' };
-  var SAFETY_LABELS = { safe: 'safe', caution: 'caution', danger: 'danger' };
+  var TOPIC_ORDER = ['linux', 'git', 'python', 'security', 'web'];
+  var SAFETY_LABELS = { safe: 'Safe', caution: 'Caution', danger: 'Destructive' };
+
+  function readStore(key) {
+    try { return localStorage.getItem(key); } catch (error) { return null; }
+  }
+
+  function writeStore(key, value) {
+    try { localStorage.setItem(key, value); } catch (error) { /* storage may be unavailable */ }
+  }
+
+  var page = document.body.dataset.page || 'home';
+  var pageTopic = document.body.dataset.topic || 'all';
 
   var state = {
     entries: DATA.entries.slice(),
     commands: DATA.commands || {},
     query: '',
-    topic: 'all',
-    mode: localStorage.getItem('cmdbook:mode') || 'beginner',
-    theme: localStorage.getItem('cmdbook:theme') || 'dark'
+    topic: pageTopic,
+    mode: readStore('cmdbook:mode') || 'beginner',
+    theme: readStore('cmdbook:theme') ||
+      (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
   };
 
-  var $ = function (sel) { return document.querySelector(sel); };
-  var $$ = function (sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); };
+  var $ = function (selector) { return document.querySelector(selector); };
 
   var els = {
     search: $('#search'),
-    topics: $('#topics'),
     results: $('#results'),
     count: $('#result-count'),
     empty: $('#empty'),
+    topicCards: $('#topic-cards'),
     heroMeta: $('#hero-meta'),
     modeToggle: $('#mode-toggle'),
     themeToggle: $('#theme-toggle'),
@@ -63,17 +75,36 @@
     return score;
   }
 
-  function visibleEntries() {
-    var terms = normalize(state.query).trim().split(/\s+/).filter(Boolean);
-    var list = state.entries.filter(function (entry) {
+  function scopedEntries() {
+    return state.entries.filter(function (entry) {
       return state.topic === 'all' || entry.topic === state.topic;
     });
+  }
+
+  function visibleEntries() {
+    var terms = normalize(state.query).trim().split(/\s+/).filter(Boolean);
+    var list = scopedEntries();
     if (!terms.length) return list;
     return list
       .map(function (entry) { return { entry: entry, score: scoreEntry(entry, terms) }; })
       .filter(function (item) { return item.score > 0; })
       .sort(function (a, b) { return b.score - a.score || a.entry.command.localeCompare(b.entry.command); })
       .map(function (item) { return item.entry; });
+  }
+
+  function relatedHtml(entry) {
+    var related = entry.related || [];
+    if (!related.length) return '';
+    var links = related.map(function (id) {
+      var target = state.entries.filter(function (item) { return item.id === id; })[0];
+      if (!target) return '';
+      var href = (page === 'home' || page === target.topic)
+        ? '#entry-' + target.id
+        : target.topic + '.html#entry-' + target.id;
+      return '<a href="' + escapeHtml(href) + '">' + escapeHtml(id) + '</a>';
+    }).filter(Boolean).join('');
+    if (!links) return '';
+    return '<div class="related pro-only"><span class="label">Related</span>' + links + '</div>';
   }
 
   function cardHtml(entry) {
@@ -84,15 +115,6 @@
           return '<div><dt><code>' + escapeHtml(flag.flag) + '</code></dt><dd>' + escapeHtml(flag.meaning) + '</dd></div>';
         }).join('') +
         '</dl></div>'
-      : '';
-
-    var related = entry.related || [];
-    var relatedHtml = related.length
-      ? '<div class="related pro-only"><span class="label">Related</span>' +
-        related.map(function (id) {
-          return '<button type="button" class="link" data-jump="' + escapeHtml(id) + '">' + escapeHtml(id) + '</button>';
-        }).join('') +
-        '</div>'
       : '';
 
     var tags = (entry.tags || []).map(function (tag) {
@@ -111,48 +133,54 @@
       '<p class="plain">' + escapeHtml(entry.plain) + '</p>' +
       '<p class="when"><span class="label">When</span> ' + escapeHtml(entry.when) + '</p>' +
       flagsHtml +
-      relatedHtml +
+      relatedHtml(entry) +
       '<div class="card-foot">' + tags + '</div>' +
     '</article>';
   }
 
-  function renderTopics() {
-    var counts = {};
-    state.entries.forEach(function (entry) { counts[entry.topic] = (counts[entry.topic] || 0) + 1; });
-    var order = Object.keys(TOPIC_LABELS);
-    var topics = Object.keys(counts).sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); });
-
-    var html = '<button type="button" class="chip' + (state.topic === 'all' ? ' active' : '') +
-      '" data-topic="all">All <span>' + state.entries.length + '</span></button>';
-    topics.forEach(function (topic) {
-      html += '<button type="button" class="chip' + (state.topic === topic ? ' active' : '') +
-        '" data-topic="' + escapeHtml(topic) + '">' + escapeHtml(TOPIC_LABELS[topic] || topic) +
-        ' <span>' + counts[topic] + '</span></button>';
-    });
-    els.topics.innerHTML = html;
+  function renderTopicCards() {
+    if (!els.topicCards) return;
+    els.topicCards.innerHTML = TOPIC_ORDER.map(function (topic) {
+      var entries = state.entries.filter(function (entry) { return entry.topic === topic; });
+      if (!entries.length) return '';
+      var samples = entries.slice(0, 3).map(function (entry) { return entry.command; }).join('  /  ');
+      return '<a class="topic-card" href="' + topic + '.html">' +
+        '<div class="topic-card-head"><h3>' + escapeHtml(TOPIC_LABELS[topic]) + '</h3><span>' + entries.length + ' commands</span></div>' +
+        '<p class="samples">' + escapeHtml(samples) + '</p>' +
+      '</a>';
+    }).join('');
   }
 
   function render() {
+    if (!els.results) return;
+
     var list = visibleEntries();
+    var total = scopedEntries().length;
+
     els.results.innerHTML = list.map(cardHtml).join('');
-    els.empty.hidden = list.length > 0;
-    els.count.textContent = list.length === state.entries.length
-      ? state.entries.length + ' commands'
-      : list.length + ' of ' + state.entries.length + ' commands';
-    renderTopics();
+    if (els.empty) els.empty.hidden = list.length > 0;
+    if (els.count) {
+      els.count.textContent = state.query.trim()
+        ? list.length + ' of ' + total + ' commands'
+        : total + ' commands';
+    }
   }
 
   function applyMode() {
     document.documentElement.dataset.mode = state.mode;
-    els.modeToggle.textContent = state.mode === 'beginner' ? 'Beginner' : 'Pro';
+    if (!els.modeToggle) return;
+    els.modeToggle.textContent = state.mode === 'beginner' ? 'Detailed' : 'Basic';
     els.modeToggle.setAttribute('aria-pressed', String(state.mode === 'pro'));
-    els.modeToggle.title = state.mode === 'beginner' ? 'Show flags and related commands' : 'Hide flags and related commands';
+    els.modeToggle.title = state.mode === 'beginner'
+      ? 'Show flags and related commands'
+      : 'Hide flags and related commands';
   }
 
   function applyTheme() {
     document.documentElement.dataset.theme = state.theme;
-    els.themeToggle.textContent = state.theme === 'dark' ? '☀️' : '🌙';
-    els.themeToggle.setAttribute('aria-label', state.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+    if (!els.themeToggle) return;
+    els.themeToggle.textContent = state.theme === 'dark' ? 'Light' : 'Dark';
+    els.themeToggle.title = state.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
   }
 
   function copyText(text, button) {
@@ -160,13 +188,10 @@
       var original = button.textContent;
       button.textContent = ok ? 'copied' : 'select it';
       button.classList.toggle('copied', ok);
-      setTimeout(function () { button.textContent = original; button.classList.remove('copied'); }, 1400);
-    }
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { fallback(); });
-    } else {
-      fallback();
+      setTimeout(function () {
+        button.textContent = original;
+        button.classList.remove('copied');
+      }, 1400);
     }
 
     function fallback() {
@@ -180,6 +205,12 @@
       try { ok = document.execCommand('copy'); } catch (error) { ok = false; }
       area.remove();
       done(ok);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, fallback);
+    } else {
+      fallback();
     }
   }
 
@@ -208,64 +239,6 @@
     return out;
   }
 
-  function explainMode(mode) {
-    var digits = mode.length === 4 ? mode.slice(1) : mode.padStart(3, '0');
-    var labels = ['owner', 'group', 'other'];
-    return digits.split('').map(function (digit, index) {
-      var value = Number(digit);
-      var rights = [4, 2, 1].map(function (bit, i) {
-        return value & bit ? ['read', 'write', 'execute'][i] : null;
-      }).filter(Boolean);
-      return labels[index] + ': ' + (rights.length ? rights.join('+') : 'none');
-    }).join(' · ');
-  }
-
-  var DANGER_RULES = [
-    { re: /\brm\s+(?:-[a-z]*[rf][a-z]*\s+)+(?:\/|~|\*)(?:\s|$)/i, message: 'Recursive force-delete of a broad path. Double-check the target.' },
-    { re: /\bchmod\s+(?:-R\s+)?777\b/i, message: 'World-writable permissions. Usually a security problem.' },
-    { re: /\b(?:curl|wget)\b[^|]*\|\s*(?:sudo\s+)?(?:ba|z)?sh\b/i, message: 'Piping a download straight into a shell. Read the script first.' },
-    { re: /\bdd\b[^\n]*\bif=/i, message: 'Raw disk write. One wrong path can destroy a drive.' },
-    { re: /\bmkfs\b/i, message: 'Formats a filesystem. This erases data.' },
-    { re: /\bgit\s+reset\s+--hard\b/i, message: 'Discards uncommitted work permanently.' },
-    { re: /\bgit\s+push\b[^\n]*--force\b/i, message: 'Force-push rewrites shared history. Prefer --force-with-lease.' },
-    { re: />\s*\/dev\/sd[a-z]/i, message: 'Writing directly to a disk device.' }
-  ];
-
-  function findDangers(raw) {
-    return DANGER_RULES.filter(function (rule) { return rule.re.test(raw); }).map(function (rule) { return rule.message; });
-  }
-
-  function flagDictionary(programKey) {
-    var own = (state.commands[programKey] && state.commands[programKey].flags) || {};
-    if (!programKey || programKey.indexOf(' ') === -1) return own;
-    var parent = state.commands[programKey.split(' ')[0]];
-    var parentFlags = (parent && parent.flags) || {};
-    return Object.assign({}, parentFlags, own);
-  }
-
-  function lookupFlag(programKey, token) {
-    var flags = flagDictionary(programKey);
-
-    if (flags[token]) return flags[token];
-
-    if (token.indexOf('=') !== -1) {
-      var parts = token.split('=');
-      var name = parts[0];
-      var value = parts.slice(1).join('=');
-      if (flags[name]) return flags[name] + ' (set to "' + value + '")';
-    }
-
-    if (/^-[a-zA-Z]{2,}$/.test(token)) {
-      var chars = token.slice(1).split('').map(function (ch) { return '-' + ch; });
-      var meanings = chars.map(function (flag) { return flags[flag]; });
-      if (meanings.every(Boolean)) {
-        return chars.map(function (flag, i) { return flag + ' ' + meanings[i]; }).join(' · ');
-      }
-    }
-
-    return null;
-  }
-
   function splitPipeline(raw) {
     var segments = [];
     var current = '';
@@ -290,6 +263,64 @@
     segments.push(current);
 
     return segments.map(function (segment) { return segment.trim(); }).filter(Boolean);
+  }
+
+  function explainMode(mode) {
+    var digits = mode.length === 4 ? mode.slice(1) : mode.padStart(3, '0');
+    var labels = ['owner', 'group', 'other'];
+    return digits.split('').map(function (digit, index) {
+      var value = Number(digit);
+      var rights = [4, 2, 1].map(function (bit, i) {
+        return value & bit ? ['read', 'write', 'execute'][i] : null;
+      }).filter(Boolean);
+      return labels[index] + ': ' + (rights.length ? rights.join('+') : 'none');
+    }).join(' · ');
+  }
+
+  var DANGER_RULES = [
+    { re: /\brm\s+(?:-[a-z]*[rf][a-z]*\s+)+(?:\/|~|\*)(?:\s|$)/i, message: 'Recursive force-delete of a broad path. Check the target before running this.' },
+    { re: /\bchmod\s+(?:-R\s+)?777\b/i, message: 'World-writable permissions are almost always a security problem.' },
+    { re: /\b(?:curl|wget)\b[^|]*\|\s*(?:sudo\s+)?(?:ba|z)?sh\b/i, message: 'This pipes a download directly into a shell. Read the script first.' },
+    { re: /\bdd\b[^\n]*\bif=/i, message: 'Raw disk write. One wrong path can destroy a drive.' },
+    { re: /\bmkfs\b/i, message: 'This formats a filesystem and erases its data.' },
+    { re: /\bgit\s+reset\s+--hard\b/i, message: 'This discards uncommitted work permanently.' },
+    { re: /\bgit\s+push\b[^\n]*--force\b/i, message: 'Force-push rewrites shared history. Prefer --force-with-lease.' },
+    { re: />\s*\/dev\/sd[a-z]/i, message: 'This writes directly to a disk device.' }
+  ];
+
+  function findDangers(raw) {
+    return DANGER_RULES.filter(function (rule) { return rule.re.test(raw); })
+      .map(function (rule) { return rule.message; });
+  }
+
+  function flagDictionary(programKey) {
+    var own = (state.commands[programKey] && state.commands[programKey].flags) || {};
+    if (!programKey || programKey.indexOf(' ') === -1) return own;
+    var parent = state.commands[programKey.split(' ')[0]];
+    return Object.assign({}, (parent && parent.flags) || {}, own);
+  }
+
+  function lookupFlag(programKey, token) {
+    var flags = flagDictionary(programKey);
+
+    if (flags[token]) return flags[token];
+
+    if (token.indexOf('=') !== -1) {
+      var parts = token.split('=');
+      var name = parts[0];
+      var value = parts.slice(1).join('=');
+      if (flags[name]) return flags[name] + ' (set to "' + value + '")';
+    }
+
+    if (/^-[a-zA-Z]{2,}$/.test(token)) {
+      var chars = token.slice(1).split('').map(function (ch) { return '-' + ch; });
+      var meanings = chars.map(function (flag) { return flags[flag]; });
+      if (meanings.every(Boolean)) {
+        return chars.map(function (flag, i) { return flag + ' ' + meanings[i]; }).join(' · ');
+      }
+    }
+
+    return null;
   }
 
   function explainTokens(tokens) {
@@ -318,10 +349,9 @@
         index += 1;
       }
 
-      var shown = programKey.indexOf(' ') !== -1 ? programKey : first;
       rows.push({
-        token: shown,
-        meaning: (state.commands[programKey] && state.commands[programKey].desc) || 'program — not in the dictionary yet',
+        token: programKey.indexOf(' ') !== -1 ? programKey : first,
+        meaning: (state.commands[programKey] && state.commands[programKey].desc) || 'program not in the dictionary',
         kind: state.commands[programKey] ? 'program' : 'unknown'
       });
     }
@@ -331,7 +361,7 @@
 
       if (token.charAt(0) === '-') {
         var meaning = lookupFlag(programKey, token);
-        rows.push({ token: token, meaning: meaning || 'flag — not in the dictionary yet', kind: meaning ? 'flag' : 'unknown' });
+        rows.push({ token: token, meaning: meaning || 'flag not in the dictionary', kind: meaning ? 'flag' : 'unknown' });
       } else if (programKey === 'chmod' && /^[0-7]{3,4}$/.test(token)) {
         rows.push({ token: token, meaning: explainMode(token), kind: 'mode' });
       } else if (/^https?:\/\//i.test(token)) {
@@ -349,7 +379,7 @@
   function explainCommand(raw) {
     var segments = splitPipeline(raw);
     if (!segments.length) {
-      return '<p class="explain-hint">Type a command above to see what each part does.</p>';
+      return '<p class="hint">Enter a command to see what each part does.</p>';
     }
 
     var rows = [];
@@ -367,7 +397,9 @@
       '<ul class="explain-list">' + rows.map(function (row) {
         return '<li class="kind-' + row.kind + '"><code>' + escapeHtml(row.token) + '</code><span>' + escapeHtml(row.meaning) + '</span></li>';
       }).join('') + '</ul>' +
-      dangers.map(function (message) { return '<p class="danger-note">⚠️ ' + escapeHtml(message) + '</p>'; }).join('') +
+      dangers.map(function (message) {
+        return '<p class="danger-note"><strong>Warning.</strong> ' + escapeHtml(message) + '</p>';
+      }).join('') +
     '</div>';
   }
 
@@ -376,81 +408,76 @@
   var searchTimer = null;
 
   function syncQueryToUrl() {
+    if (!els.search) return;
     try {
       var url = new URL(window.location.href);
       if (state.query) url.searchParams.set('q', state.query);
       else url.searchParams.delete('q');
       history.replaceState(null, '', url);
     } catch (error) {
-      /* file:// or older browsers: ignore */
+      /* file:// or restricted history: ignore */
     }
   }
 
-  function jumpToEntry(id) {
-    var entry = state.entries.filter(function (item) { return item.id === id; })[0];
-    if (!entry) return;
-    state.topic = 'all';
-    state.query = '';
-    els.search.value = '';
+  function setQuery(query) {
+    state.query = query;
+    if (els.search) els.search.value = query;
     render();
     syncQueryToUrl();
-    var card = document.getElementById('entry-' + entry.id);
-    if (card) {
-      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      card.classList.add('flash');
-      setTimeout(function () { card.classList.remove('flash'); }, 1600);
-    }
   }
 
   function bindEvents() {
-    els.search.addEventListener('input', function () {
-      state.query = els.search.value;
-      clearTimeout(searchTimer);
-      searchTimer = setTimeout(function () { render(); syncQueryToUrl(); }, 60);
-    });
+    if (els.search) {
+      els.search.addEventListener('input', function () {
+        state.query = els.search.value;
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function () { render(); syncQueryToUrl(); }, 60);
+      });
+    }
 
-    els.topics.addEventListener('click', function (event) {
-      var button = event.target.closest('[data-topic]');
-      if (!button) return;
-      state.topic = button.dataset.topic;
-      render();
-    });
+    if (els.results) {
+      els.results.addEventListener('click', function (event) {
+        var copy = event.target.closest('[data-copy]');
+        if (copy) {
+          copyText(copy.dataset.copy, copy);
+          return;
+        }
 
-    els.results.addEventListener('click', function (event) {
-      var copy = event.target.closest('[data-copy]');
-      if (copy) { copyText(copy.dataset.copy, copy); return; }
+        var tag = event.target.closest('[data-tag]');
+        if (tag) setQuery(tag.dataset.tag);
+      });
+    }
 
-      var tag = event.target.closest('[data-tag]');
-      if (tag) {
-        state.query = tag.dataset.tag;
-        els.search.value = state.query;
-        render();
-        syncQueryToUrl();
-        return;
-      }
+    if (els.empty) {
+      els.empty.addEventListener('click', function (event) {
+        if (event.target.closest('[data-clear]')) setQuery('');
+      });
+    }
 
-      var jump = event.target.closest('[data-jump]');
-      if (jump) jumpToEntry(jump.dataset.jump);
-    });
+    if (els.modeToggle) {
+      els.modeToggle.addEventListener('click', function () {
+        state.mode = state.mode === 'beginner' ? 'pro' : 'beginner';
+        writeStore('cmdbook:mode', state.mode);
+        applyMode();
+      });
+    }
 
-    els.modeToggle.addEventListener('click', function () {
-      state.mode = state.mode === 'beginner' ? 'pro' : 'beginner';
-      localStorage.setItem('cmdbook:mode', state.mode);
-      applyMode();
-    });
+    if (els.themeToggle) {
+      els.themeToggle.addEventListener('click', function () {
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        writeStore('cmdbook:theme', state.theme);
+        applyTheme();
+      });
+    }
 
-    els.themeToggle.addEventListener('click', function () {
-      state.theme = state.theme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('cmdbook:theme', state.theme);
-      applyTheme();
-    });
+    if (els.explainForm) {
+      els.explainForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        els.explainOutput.innerHTML = explainCommand(els.explainInput.value);
+      });
+    }
 
-    els.explainForm.addEventListener('submit', function (event) {
-      event.preventDefault();
-      els.explainOutput.innerHTML = explainCommand(els.explainInput.value);
-    });
-
-    $$('[data-explain]').forEach(function (button) {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-explain]'), function (button) {
       button.addEventListener('click', function () {
         els.explainInput.value = button.dataset.explain;
         els.explainOutput.innerHTML = explainCommand(button.dataset.explain);
@@ -460,21 +487,21 @@
 
     document.addEventListener('keydown', function (event) {
       var typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
-      if (event.key === '/' && !typing) {
+
+      if (event.key === '/' && !typing && els.search) {
         event.preventDefault();
         els.search.focus();
       }
-      if (event.key === 'Escape' && document.activeElement === els.search) {
-        els.search.value = '';
-        state.query = '';
-        render();
-        syncQueryToUrl();
+
+      if (event.key === 'Escape' && els.search && document.activeElement === els.search) {
+        setQuery('');
         els.search.blur();
       }
     });
   }
 
   function initFromUrl() {
+    if (!els.search) return;
     try {
       var query = new URLSearchParams(window.location.search).get('q');
       if (query) {
@@ -489,7 +516,7 @@
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator) || !/^https?:$/.test(window.location.protocol)) return;
     window.addEventListener('load', function () {
-      navigator.serviceWorker.register('./sw.js').catch(function () { /* offline still works after first load */ });
+      navigator.serviceWorker.register('./sw.js').catch(function () { /* registration is optional */ });
     });
   }
 
@@ -498,10 +525,13 @@
   initFromUrl();
   bindEvents();
   render();
+  renderTopicCards();
 
   if (els.heroMeta) {
-    var topics = Object.keys(state.entries.reduce(function (acc, entry) { acc[entry.topic] = true; return acc; }, {})).length;
-    els.heroMeta.textContent = state.entries.length + ' commands · ' + topics + ' topics · works offline';
+    var topicCount = TOPIC_ORDER.filter(function (topic) {
+      return state.entries.some(function (entry) { return entry.topic === topic; });
+    }).length;
+    els.heroMeta.textContent = state.entries.length + ' commands across ' + topicCount + ' topics';
   }
 
   registerServiceWorker();
