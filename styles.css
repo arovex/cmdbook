@@ -37,6 +37,7 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -848,29 +849,113 @@ kbd {
 /* responsive + motion */
 
 @media (max-width: 760px) {
-  .header-inner {
-    gap: 0.75rem;
+  .site-header {
+    position: static;
   }
 
-  .brand-name {
-    display: none;
+  .header-inner,
+  .wrap,
+  .wrap-narrow,
+  .footer-inner {
+    width: calc(100% - 1.5rem);
+  }
+
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 0.55rem 0.75rem;
+    height: auto;
+    padding: 0.55rem 0 0.4rem;
+  }
+
+  .nav {
+    order: 3;
+    flex: 0 0 100%;
+    gap: 0.6rem;
+    padding: 0.1rem 0 0.15rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav a {
+    padding: 0.35rem 0;
+    font-size: 0.82rem;
+  }
+
+  .header-actions {
+    gap: 0.35rem;
+  }
+
+  .header-actions .text-btn {
+    min-height: 36px;
+    padding: 0.25rem 0.55rem;
+    font-size: 0.8rem;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .icon-btn svg {
+    width: 15px;
+    height: 15px;
   }
 
   .hero {
-    padding-top: 2.25rem;
+    padding: 1.75rem 0 1.25rem;
   }
 
   .hero h1,
   .page-head h1 {
-    font-size: 1.7rem;
+    font-size: 1.65rem;
+  }
+
+  .lede {
+    margin-bottom: 1.25rem;
+    font-size: 0.92rem;
+  }
+
+  .search-wrap {
+    height: 44px;
+  }
+
+  .search-wrap input {
+    font-size: 16px;
+  }
+
+  .search-wrap kbd {
+    display: none;
+  }
+
+  .panel {
+    padding: 1rem;
+  }
+
+  .panel-head {
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+  }
+
+  .explain-panel {
+    margin-bottom: 1.75rem;
   }
 
   .explain-form {
     flex-direction: column;
   }
 
+  .explain-form input {
+    height: 42px;
+    font-size: 16px;
+  }
+
   .explain-form button {
-    height: 36px;
+    height: 42px;
+    font-size: 0.9rem;
+  }
+
+  .examples button {
+    min-height: 30px;
+    padding: 0.25rem 0.45rem;
   }
 
   .explain-list li {
@@ -878,8 +963,62 @@ kbd {
     gap: 0.1rem;
   }
 
-  .header-actions .text-btn {
-    padding: 0.2rem 0.4rem;
+  .section {
+    margin-top: 2rem;
+  }
+
+  .section-head {
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+  }
+
+  .grid {
+    gap: 0.6rem;
+  }
+
+  .card {
+    gap: 0.55rem;
+    padding: 0.85rem;
+  }
+
+  .cmd {
+    font-size: 0.78rem;
+  }
+
+  .copy {
+    min-height: 36px;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.72rem;
+  }
+
+  .plain {
+    font-size: 0.86rem;
+  }
+
+  .tag {
+    min-height: 30px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.72rem;
+  }
+
+  .page-head {
+    padding: 0.85rem 0 1rem;
+  }
+
+  .page-head p {
+    font-size: 0.88rem;
+  }
+
+  .prose pre {
+    padding: 0.75rem;
+    font-size: 0.72rem;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    padding: 1.15rem 0 1.5rem;
   }
 }
 
