@@ -504,56 +504,6 @@ kbd {
   font-size: 0.8rem;
 }
 
-/* topic cards */
-
-.topic-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
-  gap: 0.75rem;
-}
-
-.topic-card {
-  display: block;
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--panel);
-  color: var(--text);
-}
-
-.topic-card:hover {
-  border-color: var(--muted);
-  text-decoration: none;
-}
-
-.topic-card-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.topic-card h3 {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.topic-card span {
-  color: var(--muted);
-  font-size: 0.76rem;
-}
-
-.topic-card .samples {
-  margin: 0.45rem 0 0;
-  overflow: hidden;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 /* command cards */
 
 .grid {

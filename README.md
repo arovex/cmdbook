@@ -8,7 +8,7 @@ A command reference for Linux, Git, Python, security, and web. Every entry expla
 
 | Page | Contents |
 | --- | --- |
-| `index.html` | Search across all entries, the explainer, and a topic index |
+| `index.html` | Search across all entries and the explainer |
 | `linux.html` | Files, permissions, processes, archives, and remote shells |
 | `git.html` | Cloning, committing, branching, syncing, and undoing mistakes |
 | `python.html` | Environments, packages, scripts, tests, and small utilities |

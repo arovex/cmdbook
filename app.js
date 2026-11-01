@@ -35,7 +35,6 @@
     results: $('#results'),
     count: $('#result-count'),
     empty: $('#empty'),
-    topicCards: $('#topic-cards'),
     heroMeta: $('#hero-meta'),
     modeToggle: $('#mode-toggle'),
     themeToggle: $('#theme-toggle'),
@@ -136,19 +135,6 @@
       relatedHtml(entry) +
       '<div class="card-foot">' + tags + '</div>' +
     '</article>';
-  }
-
-  function renderTopicCards() {
-    if (!els.topicCards) return;
-    els.topicCards.innerHTML = TOPIC_ORDER.map(function (topic) {
-      var entries = state.entries.filter(function (entry) { return entry.topic === topic; });
-      if (!entries.length) return '';
-      var samples = entries.slice(0, 3).map(function (entry) { return entry.command; }).join('  /  ');
-      return '<a class="topic-card" href="' + topic + '.html">' +
-        '<div class="topic-card-head"><h3>' + escapeHtml(TOPIC_LABELS[topic]) + '</h3><span>' + entries.length + ' commands</span></div>' +
-        '<p class="samples">' + escapeHtml(samples) + '</p>' +
-      '</a>';
-    }).join('');
   }
 
   function render() {
@@ -526,7 +512,6 @@
   initFromUrl();
   bindEvents();
   render();
-  renderTopicCards();
 
   if (els.heroMeta) {
     var topicCount = TOPIC_ORDER.filter(function (topic) {
